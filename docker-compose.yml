@@ -3,6 +3,7 @@ version: "3.9"
 services:
   mysql:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: golden-mysql
     restart: unless-stopped
     environment:
@@ -15,103 +16,132 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     command: ["--lower_case_table_names=1", "--max_connections=200"]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -pgolden_admin || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   autentificacion:
     build: ./Autentificacion
+    platform: linux/amd64
     ports:
       - "8001:8001"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+    restart: unless-stopped
 
   carrito:
     build: ./Carrito
+    platform: linux/amd64
     ports:
       - "8002:8002"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+    restart: unless-stopped
 
   usuario:
     build: ./Usuario
+    platform: linux/amd64
     ports:
       - "8003:8003"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+    restart: unless-stopped
 
   catalogo:
     build: ./Catalogo
+    platform: linux/amd64
     ports:
       - "8004:8004"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
       PRODUCTO_SERVICE_URL: http://productos:8008
+    restart: unless-stopped
 
   inventario:
     build: ./Inventario
+    platform: linux/amd64
     ports:
       - "8005:8005"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+    restart: unless-stopped
 
   ordenes:
     build: ./Ordenes
+    platform: linux/amd64
     ports:
       - "8006:8006"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+    restart: unless-stopped
 
   pagos:
     build: ./Pagos
+    platform: linux/amd64
     ports:
       - "8007:8007"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+    restart: unless-stopped
 
   productos:
     build: ./Productos
+    platform: linux/amd64
     ports:
       - "8008:8008"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: golden_admin
       SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+    restart: unless-stopped
 
 volumes:
   mysql_data:
