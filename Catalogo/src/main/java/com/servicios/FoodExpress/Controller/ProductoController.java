@@ -5,6 +5,7 @@ import com.servicios.FoodExpress.dto.ProductoResponse;
 import com.servicios.FoodExpress.service.ProductoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,6 +22,8 @@ import java.util.List;
 public class ProductoController {
 
     private final ProductoService productoService;
+    @Value("${producto.service.url:http://localhost:8008}")
+    private String productoServiceUrl;
 
     @GetMapping
     public ResponseEntity<List<ProductoResponse>> listar() {
@@ -32,18 +36,23 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoResponse> crear(@Valid @RequestBody ProductoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productoService.crear(request));
+    public ResponseEntity<Void> crear(@Valid @RequestBody ProductoRequest request) {
+        // Redirige la creación al microservicio dedicado de Productos (8008) para evitar choques.
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .location(URI.create(productoServiceUrl + "/api/productos"))
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoResponse> actualizar(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
-        return ResponseEntity.ok(productoService.actualizar(id, request));
+    public ResponseEntity<Void> actualizar(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .location(URI.create(productoServiceUrl + "/api/productos/" + id))
+                .build();
     }
 
     // Crear con archivo (multipart)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductoResponse> crearMultipart(
+    public ResponseEntity<Void> crearMultipart(
             @RequestPart("nombre") String nombre,
             @RequestPart("precio") String precio,
             @RequestPart("categoriaId") Long categoriaId,
@@ -51,19 +60,14 @@ public class ProductoController {
             @RequestPart(value = "imagenUrl", required = false) String imagenUrl,
             @RequestPart(value = "imagen", required = false) MultipartFile imagen
     ) {
-        ProductoRequest request = new ProductoRequest();
-        request.setNombre(nombre);
-        request.setPrecio(new java.math.BigDecimal(precio));
-        request.setCategoriaId(categoriaId);
-        request.setDescripcion(descripcion);
-        request.setImagenUrl(imagenUrl);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productoService.crearMultipart(request, imagen));
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .location(URI.create(productoServiceUrl + "/api/productos"))
+                .build();
     }
 
     // Actualizar con archivo (multipart)
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductoResponse> actualizarMultipart(
+    public ResponseEntity<Void> actualizarMultipart(
             @PathVariable Long id,
             @RequestPart("nombre") String nombre,
             @RequestPart("precio") String precio,
@@ -72,13 +76,9 @@ public class ProductoController {
             @RequestPart(value = "imagenUrl", required = false) String imagenUrl,
             @RequestPart(value = "imagen", required = false) MultipartFile imagen
     ) {
-        ProductoRequest request = new ProductoRequest();
-        request.setNombre(nombre);
-        request.setPrecio(new java.math.BigDecimal(precio));
-        request.setCategoriaId(categoriaId);
-        request.setDescripcion(descripcion);
-        request.setImagenUrl(imagenUrl);
-        return ResponseEntity.ok(productoService.actualizarMultipart(id, request, imagen));
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .location(URI.create(productoServiceUrl + "/api/productos/" + id))
+                .build();
     }
 
     @DeleteMapping("/{id}")

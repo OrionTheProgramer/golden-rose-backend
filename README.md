@@ -38,6 +38,7 @@ Microservicio Productos (8008) – skins Valorant
 - Campo opcional `referenciaExterna` para traer datos de https://valorant-api.com (nombre/icono/rareza) si se envía un `skinlevel uuid`.
 - Endpoint de imagen: `/api/productos/{id}/imagen` (devuelve bytes o redirige a `imagenUrl`).
 - Semilla dev: `data.sql` carga “Vandal Champions 2025” con imagen remota y referencia externa.
+- Importante: los POST/PUT de productos se deben hacer en el microservicio `Productos` (8008). `Catalogo` redirige (HTTP 307) para evitar conflictos.
 
 Crear/actualizar productos
 1) Multipart (imagen binaria)

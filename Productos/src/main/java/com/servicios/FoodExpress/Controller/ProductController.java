@@ -1,11 +1,16 @@
 package com.servicios.FoodExpress.Controller;
 
-import com.servicios.FoodExpress.Model.Product;
 import com.servicios.FoodExpress.dto.ProductRequest;
 import com.servicios.FoodExpress.dto.ProductResponse;
 import com.servicios.FoodExpress.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
+@Tag(name = "Productos", description = "CRUD de skins/productos Valorant")
 public class ProductController {
 
     private final ProductService productService;
@@ -58,6 +64,23 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(
+            summary = "Crear producto (multipart)",
+            description = "Permite subir imagen binaria y campos de producto. Postman mostrará los campos del formulario automáticamente.",
+            requestBody = @RequestBody(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE, examples = {
+                    @ExampleObject(name = "Producto multipart",
+                            value = """
+                                    --form-data--
+                                    nombre=Vandal Champions 2025
+                                    precio=49.99
+                                    categoria=Rifle
+                                    rareza=Exclusive
+                                    descripcion=Edición Champions 2025 con animaciones
+                                    referenciaExterna=placeholder-champions-2025
+                                    imagen=@champions.png
+                                    """)
+            }))
+    )
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProductResponse> crearMultipart(
             @RequestParam("nombre") String nombre,
@@ -84,6 +107,24 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Operation(
+            summary = "Crear producto (JSON/base64 o URL)",
+            requestBody = @RequestBody(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProductRequest.class), examples = {
+                    @ExampleObject(name = "Producto JSON con base64",
+                            value = """
+                                    {
+                                      "nombre": "Phantom Oni",
+                                      "precio": 39.9,
+                                      "descripcion": "Edición limitada",
+                                      "rareza": "Exclusive",
+                                      "categoria": "Rifle",
+                                      "imagenBase64": "<base64>",
+                                      "imagenContentType": "image/png",
+                                      "referenciaExterna": "f048e0fa-4de4-2729-21e6-bad2a1421d00"
+                                    }
+                                    """)
+            }))
+    )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductResponse> crearJson(@Valid @RequestBody ProductRequest request) throws IOException {
         ProductResponse created = productService.crear(request, null);
