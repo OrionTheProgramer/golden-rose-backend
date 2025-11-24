@@ -8,6 +8,7 @@ import com.servicios.FoodExpress.dto.ProductoRequest;
 import com.servicios.FoodExpress.dto.ProductoResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,19 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
+    public ProductoResponse crearMultipart(ProductoRequest request, MultipartFile imagen) {
+        Categoria categoria = getCategoria(request.getCategoriaId());
+        Producto producto = Producto.builder()
+                .nombre(request.getNombre())
+                .precio(request.getPrecio())
+                .imagenUrl(request.getImagenUrl())
+                .descripcion(request.getDescripcion())
+                .categoria(categoria)
+                .build();
+        aplicarImagenMultipart(imagen, producto);
+        return toResponse(productoRepository.save(producto));
+    }
+
     public ProductoResponse actualizar(Long id, ProductoRequest request) {
         Producto producto = getById(id);
         Categoria categoria = getCategoria(request.getCategoriaId());
@@ -52,6 +66,18 @@ public class ProductoService {
         producto.setDescripcion(request.getDescripcion());
         producto.setCategoria(categoria);
         aplicarImagen(request, producto);
+        return toResponse(productoRepository.save(producto));
+    }
+
+    public ProductoResponse actualizarMultipart(Long id, ProductoRequest request, MultipartFile imagen) {
+        Producto producto = getById(id);
+        Categoria categoria = getCategoria(request.getCategoriaId());
+        producto.setNombre(request.getNombre());
+        producto.setPrecio(request.getPrecio());
+        producto.setImagenUrl(request.getImagenUrl());
+        producto.setDescripcion(request.getDescripcion());
+        producto.setCategoria(categoria);
+        aplicarImagenMultipart(imagen, producto);
         return toResponse(productoRepository.save(producto));
     }
 
@@ -93,6 +119,17 @@ public class ProductoService {
         if (request.getImagenBase64() != null && !request.getImagenBase64().isBlank()) {
             producto.setImagenData(Base64.getDecoder().decode(request.getImagenBase64()));
             producto.setImagenContentType(request.getImagenContentType() != null ? request.getImagenContentType() : "image/png");
+        }
+    }
+
+    private void aplicarImagenMultipart(MultipartFile imagen, Producto producto) {
+        if (imagen != null && !imagen.isEmpty()) {
+            try {
+                producto.setImagenData(imagen.getBytes());
+                producto.setImagenContentType(imagen.getContentType() != null ? imagen.getContentType() : "image/png");
+            } catch (Exception e) {
+                throw new IllegalArgumentException("No se pudo leer la imagen", e);
+            }
         }
     }
 }
