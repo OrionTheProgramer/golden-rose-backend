@@ -1,4 +1,4 @@
-package com.servicios.FoodExpress.dto;
+package com.servicios.goldenrose.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +16,9 @@ public class ProductResponse {
     private String descripcion;
     private BigDecimal precio;
     private String rareza;
-    private String categoria;
     private String imagenUrl;
-    private boolean hasImageData;
-    private String imagenContentType;
+    private Integer stock;
     private boolean activo;
-    private String referenciaExterna;
     private LocalDateTime creadoEn;
     private LocalDateTime actualizadoEn;
 }

@@ -1,4 +1,4 @@
-package com.servicios.FoodExpress.Model;
+package com.servicios.goldenrose.Model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -36,22 +36,13 @@ public class Product {
     /** Ej: Common, Rare, Epic, Legendary, Exclusive */
     private String rareza;
 
-    /** Categor�a o tipo de arma */
-    private String categoria;
-
-    /** URL remota de imagen (se usa si no hay imagenData) */
+    /** URL remota de imagen */
     private String imagenUrl;
 
-    /** Imagen almacenada en base de datos */
-    @Lob
-    private byte[] imagenData;
-
-    private String imagenContentType;
+    /** Stock disponible */
+    private Integer stock;
 
     private boolean activo = true;
-
-    /** Id externo de Valorant API (skinUuid) para referencia */
-    private String referenciaExterna;
 
     @CreationTimestamp
     private LocalDateTime creadoEn;

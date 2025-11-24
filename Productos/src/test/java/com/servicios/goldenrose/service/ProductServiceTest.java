@@ -1,22 +1,21 @@
-package com.servicios.FoodExpress.service;
+package com.servicios.goldenrose.service;
 
-import com.servicios.FoodExpress.Model.Product;
-import com.servicios.FoodExpress.Repository.ProductRepository;
-import com.servicios.FoodExpress.dto.ProductRequest;
-import com.servicios.FoodExpress.dto.ProductResponse;
+import com.servicios.goldenrose.Model.Product;
+import com.servicios.goldenrose.Repository.ProductRepository;
+import com.servicios.goldenrose.dto.ProductRequest;
+import com.servicios.goldenrose.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ProductServiceTest {
 
@@ -26,18 +25,16 @@ class ProductServiceTest {
     @BeforeEach
     void setup() {
         repository = mock(ProductRepository.class);
-        WebClient webClient = WebClient.builder()
-                .exchangeFunction(clientRequest -> Mono.empty())
-                .build();
-        service = new ProductService(repository, webClient);
+        service = new ProductService(repository);
     }
 
     @Test
-    void crear_guarda_producto_con_datos_basicos() throws Exception {
+    void crear_guarda_producto_con_datos_basicos() {
         ProductRequest request = new ProductRequest();
         request.setNombre("Vandal Prime");
         request.setPrecio(new BigDecimal("45.5"));
         request.setRareza("Legendary");
+        request.setStock(10);
 
         when(repository.save(any(Product.class))).thenAnswer(invocation -> {
             Product p = invocation.getArgument(0);
@@ -45,7 +42,7 @@ class ProductServiceTest {
             return p;
         });
 
-        ProductResponse response = service.crear(request, null);
+        ProductResponse response = service.crear(request);
 
         ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
         verify(repository).save(captor.capture());
@@ -53,6 +50,7 @@ class ProductServiceTest {
 
         assertThat(saved.getNombre()).isEqualTo("Vandal Prime");
         assertThat(saved.getPrecio()).isEqualByComparingTo("45.5");
+        assertThat(saved.getStock()).isEqualTo(10);
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getNombre()).isEqualTo("Vandal Prime");
     }
@@ -73,13 +71,4 @@ class ProductServiceTest {
         assertThat(list.get(0).getNombre()).isEqualTo("Phantom Oni");
     }
 
-    @Test
-    void obtenerEntidad_devuelve_optional() {
-        Product p = new Product();
-        p.setId(5L);
-        when(repository.findById(5L)).thenReturn(Optional.of(p));
-
-        Optional<Product> result = service.obtenerEntidad(5L);
-        assertThat(result).isPresent();
-    }
 }

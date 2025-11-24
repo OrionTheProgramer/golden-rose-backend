@@ -1,6 +1,6 @@
-package com.servicios.FoodExpress.Repository;
+package com.servicios.goldenrose.Repository;
 
-import com.servicios.FoodExpress.Model.Product;
+import com.servicios.goldenrose.Model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

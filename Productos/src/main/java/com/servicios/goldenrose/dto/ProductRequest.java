@@ -1,4 +1,4 @@
-package com.servicios.FoodExpress.dto;
+package com.servicios.goldenrose.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,11 +16,7 @@ public class ProductRequest {
     @PositiveOrZero
     private BigDecimal precio;
     private String rareza;
-    private String categoria;
     private String imagenUrl;
-    private String imagenBase64;
-    private String imagenContentType;
+    private Integer stock;
     private Boolean activo;
-    /** UUID de la skin en valorant-api.com (opcional) */
-    private String referenciaExterna;
 }

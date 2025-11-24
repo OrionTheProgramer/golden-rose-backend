@@ -1,4 +1,4 @@
-package com.servicios.FoodExpress.Config;
+package com.servicios.goldenrose.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
