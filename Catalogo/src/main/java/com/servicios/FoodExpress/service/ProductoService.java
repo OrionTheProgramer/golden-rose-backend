@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -38,6 +39,7 @@ public class ProductoService {
                 .descripcion(request.getDescripcion())
                 .categoria(categoria)
                 .build();
+        aplicarImagen(request, producto);
         return toResponse(productoRepository.save(producto));
     }
 
@@ -49,6 +51,7 @@ public class ProductoService {
         producto.setImagenUrl(request.getImagenUrl());
         producto.setDescripcion(request.getDescripcion());
         producto.setCategoria(categoria);
+        aplicarImagen(request, producto);
         return toResponse(productoRepository.save(producto));
     }
 
@@ -64,6 +67,10 @@ public class ProductoService {
                 .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
     }
 
+    public Producto obtenerEntidad(Long id) {
+        return getById(id);
+    }
+
     private Categoria getCategoria(Long id) {
         return categoriaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
@@ -75,9 +82,17 @@ public class ProductoService {
                 .nombre(producto.getNombre())
                 .precio(producto.getPrecio())
                 .imagenUrl(producto.getImagenUrl())
+                .hasImageData(producto.getImagenData() != null && producto.getImagenData().length > 0)
                 .descripcion(producto.getDescripcion())
                 .categoriaId(producto.getCategoria() != null ? producto.getCategoria().getId() : null)
                 .categoriaNombre(producto.getCategoria() != null ? producto.getCategoria().getNombre() : null)
                 .build();
+    }
+
+    private void aplicarImagen(ProductoRequest request, Producto producto) {
+        if (request.getImagenBase64() != null && !request.getImagenBase64().isBlank()) {
+            producto.setImagenData(Base64.getDecoder().decode(request.getImagenBase64()));
+            producto.setImagenContentType(request.getImagenContentType() != null ? request.getImagenContentType() : "image/png");
+        }
     }
 }

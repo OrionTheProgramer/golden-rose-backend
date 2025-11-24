@@ -5,7 +5,9 @@ import com.servicios.FoodExpress.dto.ProductoResponse;
 import com.servicios.FoodExpress.service.ProductoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,5 +44,23 @@ public class ProductoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         productoService.eliminar(id);
+    }
+
+    @GetMapping("/{id}/imagen")
+    public ResponseEntity<byte[]> obtenerImagen(@PathVariable Long id) {
+        var entidad = productoService.obtenerEntidad(id);
+        if (entidad.getImagenData() != null && entidad.getImagenData().length > 0) {
+            MediaType type = MediaType.parseMediaType(
+                    entidad.getImagenContentType() != null ? entidad.getImagenContentType() : "image/png");
+            return ResponseEntity.ok()
+                    .contentType(type)
+                    .body(entidad.getImagenData());
+        }
+        if (entidad.getImagenUrl() != null) {
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, entidad.getImagenUrl())
+                    .build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

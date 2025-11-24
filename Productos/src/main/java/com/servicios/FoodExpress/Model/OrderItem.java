@@ -13,38 +13,31 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "productos")
+@Table(name = "order_items")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Producto {
+public class OrderItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 120)
-    private String nombre;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orden_id")
+    private Orden orden;
 
     @NotNull
-    @Min(0)
-    private BigDecimal precio;
+    private Long productId;
 
-    @Size(max = 500)
-    private String imagenUrl;
+    @NotBlank
+    @Size(max = 120)
+    private String productName;
 
-    @Size(max = 255)
-    private String descripcion;
+    @Min(1)
+    private int quantity;
 
-    @Lob
-    @Column(name = "imagen_data")
-    private byte[] imagenData;
-
-    @Size(max = 100)
-    private String imagenContentType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id")
-    private Categoria categoria;
+    @NotNull
+    private BigDecimal price;
 }

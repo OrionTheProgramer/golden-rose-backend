@@ -26,4 +26,7 @@ public class ProductoRequest {
 
     @NotNull
     private Long categoriaId;
+
+    private String imagenBase64;
+    private String imagenContentType;
 }

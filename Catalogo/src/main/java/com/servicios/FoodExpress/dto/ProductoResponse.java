@@ -12,6 +12,7 @@ public class ProductoResponse {
     private String nombre;
     private BigDecimal precio;
     private String imagenUrl;
+    private boolean hasImageData;
     private String descripcion;
     private Long categoriaId;
     private String categoriaNombre;
