@@ -1,0 +1,117 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: golden-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: golden_rose
+      MYSQL_USER: golden_admin
+      MYSQL_PASSWORD: GoldenRose2024!*
+      MYSQL_ROOT_PASSWORD: GoldenRose2024!*
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: ["--lower_case_table_names=1", "--max_connections=200"]
+
+  autentificacion:
+    build: ./Autentificacion
+    ports:
+      - "8001:8001"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+
+  carrito:
+    build: ./Carrito
+    ports:
+      - "8002:8002"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+
+  usuario:
+    build: ./Usuario
+    ports:
+      - "8003:8003"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+
+  catalogo:
+    build: ./Catalogo
+    ports:
+      - "8004:8004"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+      PRODUCTO_SERVICE_URL: http://productos:8008
+
+  inventario:
+    build: ./Inventario
+    ports:
+      - "8005:8005"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+
+  ordenes:
+    build: ./Ordenes
+    ports:
+      - "8006:8006"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+
+  pagos:
+    build: ./Pagos
+    ports:
+      - "8007:8007"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+
+  productos:
+    build: ./Productos
+    ports:
+      - "8008:8008"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/golden_rose
+      SPRING_DATASOURCE_USERNAME: golden_admin
+      SPRING_DATASOURCE_PASSWORD: GoldenRose2024!*
+
+volumes:
+  mysql_data:
