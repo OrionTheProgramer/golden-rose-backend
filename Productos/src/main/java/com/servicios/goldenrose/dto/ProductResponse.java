@@ -7,6 +7,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/** Respuesta expuesta hacia el frontend con datos completos del producto. */
 @Data
 @Builder
 @AllArgsConstructor

@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Lógica de negocio del carrito: agrega, actualiza y calcula totales por usuario.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -21,6 +24,7 @@ public class CartService {
 
     private final CartRepository cartRepository;
 
+    /** Obtiene el carrito del usuario o lo crea en blanco si no existe. */
     public CartResponse obtenerPorUsuario(Long userId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> cartRepository.save(Cart.builder()
@@ -31,6 +35,7 @@ public class CartService {
         return toResponse(cart);
     }
 
+    /** Agrega un item (o suma cantidades) y recalcula el total. */
     public CartResponse agregarItem(Long userId, CartItemRequest request) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> Cart.builder()
@@ -61,6 +66,7 @@ public class CartService {
         return toResponse(cartRepository.save(cart));
     }
 
+    /** Actualiza la cantidad de un item; si queda en cero lo elimina. */
     public CartResponse actualizarCantidad(Long userId, Long productId, int quantity) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
@@ -79,6 +85,7 @@ public class CartService {
         return toResponse(cartRepository.save(cart));
     }
 
+    /** Elimina un item concreto y recalcula total. */
     public CartResponse eliminarItem(Long userId, Long productId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
@@ -87,6 +94,7 @@ public class CartService {
         return toResponse(cartRepository.save(cart));
     }
 
+    /** Limpia el carrito completo del usuario. */
     public void limpiar(Long userId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Carrito no encontrado"));
@@ -95,6 +103,7 @@ public class CartService {
         cartRepository.save(cart);
     }
 
+    /** Multiplica precio x cantidad y suma todos los items. */
     private BigDecimal calcularTotal(Cart cart) {
         return cart.getItems().stream()
                 .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))

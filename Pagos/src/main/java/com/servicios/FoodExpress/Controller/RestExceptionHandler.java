@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Manejo comun de errores para pagos. */
 @RestControllerAdvice
 public class RestExceptionHandler {
 

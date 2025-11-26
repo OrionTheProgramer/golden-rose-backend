@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Normaliza respuestas de error en el microservicio Catalogo. */
 @RestControllerAdvice
 public class RestExceptionHandler {
 

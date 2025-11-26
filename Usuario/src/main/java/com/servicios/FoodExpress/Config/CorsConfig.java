@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
+/** CORS abierto para que el front pueda invocar usuarios. */
 @Configuration
 public class CorsConfig {
 

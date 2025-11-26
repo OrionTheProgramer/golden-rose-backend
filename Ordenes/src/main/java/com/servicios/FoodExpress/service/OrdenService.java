@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+/** Servicio de ordenes: crea compras, calcula totales y actualiza estados. */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -24,14 +25,17 @@ public class OrdenService {
 
     private final OrdenRepository ordenRepository;
 
+    /** Lista todas las ordenes. */
     public List<OrdenResponse> listar() {
         return ordenRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    /** Obtiene una orden por id. */
     public OrdenResponse obtener(Long id) {
         return toResponse(getById(id));
     }
 
+    /** Crea una nueva orden con items y total calculado. */
     public OrdenResponse crear(OrdenRequest request) {
         Orden orden = new Orden();
         orden.setOrderNumber(generarNumeroOrden());
@@ -55,12 +59,14 @@ public class OrdenService {
         return toResponse(ordenRepository.save(orden));
     }
 
+    /** Cambia el estado de la orden (ej: PENDING -> PAID). */
     public OrdenResponse actualizarEstado(Long id, OrderStatus status) {
         Orden orden = getById(id);
         orden.setStatus(status);
         return toResponse(ordenRepository.save(orden));
     }
 
+    /** Elimina la orden si existe. */
     public void eliminar(Long id) {
         if (!ordenRepository.existsById(id)) {
             throw new EntityNotFoundException("Orden no encontrada");

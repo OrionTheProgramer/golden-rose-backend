@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entidad JPA basica para los usuarios que pueden autenticarse.
+ */
 @Entity
 @Table(name = "auth_users", uniqueConstraints = @UniqueConstraint(name = "uk_auth_email", columnNames = "email"))
 @Data

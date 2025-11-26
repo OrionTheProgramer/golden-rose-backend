@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
+/** Configuracion CORS para permitir llamadas desde cualquier origen. */
 @Configuration
 public class CorsConfig {
     @Bean

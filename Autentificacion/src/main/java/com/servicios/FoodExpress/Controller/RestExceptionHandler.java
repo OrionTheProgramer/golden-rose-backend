@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Maneja excepciones comunes y devuelve respuestas JSON coherentes en autenticacion.
+ */
 @RestControllerAdvice
 public class RestExceptionHandler {
 
+    /** Devuelve 401 cuando el usuario no existe o las credenciales son invalidas. */
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleNotFound(EntityNotFoundException ex) {
         Map<String, String> body = new HashMap<>();
@@ -20,6 +24,7 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
+    /** Mensajes de solicitud invalida (correo duplicado, payload incorrecto). */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleBadRequest(IllegalArgumentException ex) {
         Map<String, String> body = new HashMap<>();
@@ -27,6 +32,7 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    /** Devuelve mapa campo -> mensaje de validacion cuando falla @Valid. */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

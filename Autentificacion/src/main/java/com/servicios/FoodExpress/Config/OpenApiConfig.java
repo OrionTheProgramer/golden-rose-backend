@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Configuracion de metadatos OpenAPI/Swagger. */
 @Configuration
 public class OpenApiConfig {
     @Bean
@@ -13,7 +14,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .components(new Components())
                 .info(new Info()
-                        .title("API Autentificación - Golden Rose")
+                        .title("API Autenticacion - Golden Rose")
                         .version("1.0.0")
                         .description("Endpoints de login y registro con JWT"));
     }

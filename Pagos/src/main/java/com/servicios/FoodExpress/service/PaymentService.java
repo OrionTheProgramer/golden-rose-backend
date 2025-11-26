@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/** Servicio de pagos: registra cobros simulados y estados. */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -21,16 +22,19 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
 
+    /** Lista todos los pagos registrados. */
     public List<PaymentResponse> listar() {
         return paymentRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    /** Obtiene pago asociado a una orden. */
     public PaymentResponse obtenerPorOrden(Long orderId) {
         return paymentRepository.findByOrderId(orderId)
                 .map(this::toResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Pago no encontrado para la orden"));
     }
 
+    /** Crea un pago simulado con referencia de proveedor fake. */
     public PaymentResponse crear(PaymentRequest request) {
         Payment pago = Payment.builder()
                 .orderId(request.getOrderId())
@@ -43,6 +47,7 @@ public class PaymentService {
         return toResponse(paymentRepository.save(pago));
     }
 
+    /** Actualiza estado de un pago y opcionalmente referencia del proveedor. */
     public PaymentResponse actualizarEstado(Long orderId, ActualizarEstadoPagoRequest request) {
         Payment pago = paymentRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Pago no encontrado para la orden"));

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Normaliza errores en el microservicio de ordenes. */
 @RestControllerAdvice
 public class RestExceptionHandler {
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/** API REST principal para CRUD de productos. */
 @RestController
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
@@ -21,11 +22,13 @@ public class ProductController {
 
     private final ProductService productService;
 
+    /** Lista productos activos. */
     @GetMapping
     public List<ProductResponse> listar() {
         return productService.listarActivos();
     }
 
+    /** Obtiene producto por id. */
     @GetMapping("/{id}")
     public ProductResponse obtener(@PathVariable Long id) {
         return productService.obtener(id);
@@ -44,6 +47,7 @@ public class ProductController {
         return productService.actualizar(id, request);
     }
 
+    /** Soft delete: marca como inactivo. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         productService.eliminarLogico(id);

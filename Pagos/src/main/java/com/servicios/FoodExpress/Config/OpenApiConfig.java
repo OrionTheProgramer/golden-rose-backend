@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Metadatos OpenAPI/Swagger del microservicio de pagos. */
 @Configuration
 public class OpenApiConfig {
     @Bean

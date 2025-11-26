@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
+/** Permite CORS basico para que los clientes llamen al API sin restricciones. */
 @Configuration
 public class CorsConfig {
 

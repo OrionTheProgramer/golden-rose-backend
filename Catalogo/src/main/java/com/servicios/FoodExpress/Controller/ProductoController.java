@@ -16,6 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * API de productos del catalogo.
+ * La escritura se redirige al microservicio Productos (8008) y este servicio conserva lectura/fallback.
+ */
 @RestController
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
@@ -25,24 +29,27 @@ public class ProductoController {
     @Value("${producto.service.url:http://localhost:8008}")
     private String productoServiceUrl;
 
+    /** Lista todos los productos guardados localmente. */
     @GetMapping
     public ResponseEntity<List<ProductoResponse>> listar() {
         return ResponseEntity.ok(productoService.listar());
     }
 
+    /** Obtiene detalle de producto por id. */
     @GetMapping("/{id}")
     public ResponseEntity<ProductoResponse> obtener(@PathVariable Long id) {
         return ResponseEntity.ok(productoService.obtener(id));
     }
 
+    /** Redirige la creacion al servicio Productos (JSON). */
     @PostMapping
     public ResponseEntity<Void> crear(@Valid @RequestBody ProductoRequest request) {
-        // Redirige la creación al microservicio dedicado de Productos (8008) para evitar choques.
         return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
                 .location(URI.create(productoServiceUrl + "/api/productos"))
                 .build();
     }
 
+    /** Redirige la actualizacion al servicio Productos (JSON). */
     @PutMapping("/{id}")
     public ResponseEntity<Void> actualizar(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
         return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
@@ -50,7 +57,7 @@ public class ProductoController {
                 .build();
     }
 
-    // Crear con archivo (multipart)
+    /** Redirige creacion multipart (imagen subida) al servicio Productos. */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> crearMultipart(
             @RequestPart("nombre") String nombre,
@@ -65,7 +72,7 @@ public class ProductoController {
                 .build();
     }
 
-    // Actualizar con archivo (multipart)
+    /** Redirige actualizacion multipart al servicio Productos. */
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> actualizarMultipart(
             @PathVariable Long id,
@@ -81,12 +88,14 @@ public class ProductoController {
                 .build();
     }
 
+    /** Elimina producto almacenado localmente (fallback). */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         productoService.eliminar(id);
     }
 
+    /** Devuelve bytes de imagen almacenada o redirige a imagenUrl. */
     @GetMapping("/{id}/imagen")
     public ResponseEntity<byte[]> obtenerImagen(@PathVariable Long id) {
         var entidad = productoService.obtenerEntidad(id);

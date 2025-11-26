@@ -17,6 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/** Pruebas unitarias del servicio de productos (mapeos y filtros basicos). */
 class ProductServiceTest {
 
     private ProductRepository repository;

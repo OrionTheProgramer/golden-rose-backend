@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Manejo centralizado de errores para el microservicio de carritos. */
 @RestControllerAdvice
 public class RestExceptionHandler {
 

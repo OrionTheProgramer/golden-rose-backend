@@ -7,6 +7,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuracion basica: deshabilita CSRF y permite todas las rutas
+ * (solo se usa emision de JWT; la validacion se haria a nivel de gateway/front).
+ */
 @Configuration
 public class SecurityConfig {
 

@@ -8,13 +8,17 @@ import com.servicios.FoodExpress.dto.ProductoRequest;
 import com.servicios.FoodExpress.dto.ProductoResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 import java.util.List;
 
+/**
+ * Servicio de productos del catalogo.
+ * Permite CRUD y soporta carga de imagen via base64 o multipart.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -23,14 +27,17 @@ public class ProductoService {
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
 
+    /** Lista todos los productos almacenados en este microservicio. */
     public List<ProductoResponse> listar() {
         return productoRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    /** Obtiene un producto por id; lanza excepcion si no existe. */
     public ProductoResponse obtener(Long id) {
         return toResponse(getById(id));
     }
 
+    /** Crea un producto con datos JSON simples. */
     public ProductoResponse crear(ProductoRequest request) {
         Categoria categoria = getCategoria(request.getCategoriaId());
         Producto producto = Producto.builder()
@@ -44,6 +51,7 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
+    /** Crea producto a partir de multipart (ej. imagen subida como archivo). */
     public ProductoResponse crearMultipart(ProductoRequest request, MultipartFile imagen) {
         Categoria categoria = getCategoria(request.getCategoriaId());
         Producto producto = Producto.builder()
@@ -57,6 +65,7 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
+    /** Actualiza datos basicos y opcion de imagen base64. */
     public ProductoResponse actualizar(Long id, ProductoRequest request) {
         Producto producto = getById(id);
         Categoria categoria = getCategoria(request.getCategoriaId());
@@ -69,6 +78,7 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
+    /** Actualiza datos y reemplaza imagen a partir de multipart. */
     public ProductoResponse actualizarMultipart(Long id, ProductoRequest request, MultipartFile imagen) {
         Producto producto = getById(id);
         Categoria categoria = getCategoria(request.getCategoriaId());
@@ -81,6 +91,7 @@ public class ProductoService {
         return toResponse(productoRepository.save(producto));
     }
 
+    /** Elimina un producto; si no existe lanza EntityNotFoundException. */
     public void eliminar(Long id) {
         if (!productoRepository.existsById(id)) {
             throw new EntityNotFoundException("Producto no encontrado");
@@ -99,7 +110,7 @@ public class ProductoService {
 
     private Categoria getCategoria(Long id) {
         return categoriaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Categoria no encontrada"));
     }
 
     private ProductoResponse toResponse(Producto producto) {

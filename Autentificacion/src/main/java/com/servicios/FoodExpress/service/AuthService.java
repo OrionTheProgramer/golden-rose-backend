@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Servicio central de autenticacion: valida credenciales, registra usuarios y genera tokens JWT.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -20,11 +23,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    /**
+     * Valida las credenciales del usuario y emite un JWT basico con el email como subject.
+     *
+     * @param request credenciales enviadas por el cliente
+     * @return datos del usuario autenticado junto al token
+     * @throws EntityNotFoundException si el correo no existe o la clave no coincide
+     */
     public LoginResponse login(LoginRequest request) {
         AuthUser user = authUserRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("Credenciales inválidas"));
+                .orElseThrow(() -> new EntityNotFoundException("Credenciales invalidas"));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new EntityNotFoundException("Credenciales inválidas");
+            throw new EntityNotFoundException("Credenciales invalidas");
         }
         String token = jwtUtil.generateToken(user.getEmail());
         return LoginResponse.builder()
@@ -36,9 +46,17 @@ public class AuthService {
                 .build();
     }
 
+    /**
+     * Registra un nuevo usuario y devuelve el token de acceso inmediato.
+     * Asigna rol admin si el correo termina en profesor.duoc.cl, de lo contrario client.
+     *
+     * @param request datos de registro
+     * @return datos del nuevo usuario con su token JWT
+     * @throws IllegalArgumentException si el correo ya esta registrado
+     */
     public LoginResponse register(RegisterRequest request) {
         if (authUserRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("El correo ya está registrado");
+            throw new IllegalArgumentException("El correo ya esta registrado");
         }
         AuthUser user = AuthUser.builder()
                 .username(request.getUsername())

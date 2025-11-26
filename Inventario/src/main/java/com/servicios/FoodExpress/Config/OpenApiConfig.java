@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Metadatos OpenAPI/Swagger para inventario. */
 @Configuration
 public class OpenApiConfig {
 
@@ -16,6 +17,6 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("API Inventario - Golden Rose")
                         .version("1.0.0")
-                        .description("Endpoints para gestión de stock y niveles críticos"));
+                        .description("Endpoints para gestion de stock y niveles criticos"));
     }
 }

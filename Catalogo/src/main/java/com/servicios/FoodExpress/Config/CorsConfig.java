@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
+/** Habilita CORS generico para que cualquier cliente consuma el catalogo. */
 @Configuration
 public class CorsConfig {
 

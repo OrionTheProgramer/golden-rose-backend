@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Documentacion OpenAPI/Swagger del catalogo. */
 @Configuration
 public class OpenApiConfig {
 
@@ -14,8 +15,8 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .components(new Components())
                 .info(new Info()
-                        .title("API Catálogo - Golden Rose")
+                        .title("API Catalogo - Golden Rose")
                         .version("1.0.0")
-                        .description("Endpoints de productos y categorías"));
+                        .description("Endpoints de productos y categorias (lectura y fallback)"));
     }
 }

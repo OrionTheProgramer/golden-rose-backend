@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/** Respuestas de error coherentes para inventario. */
 @RestControllerAdvice
 public class RestExceptionHandler {
 

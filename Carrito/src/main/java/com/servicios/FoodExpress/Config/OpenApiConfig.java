@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Documentacion OpenAPI/Swagger para el microservicio de carritos. */
 @Configuration
 public class OpenApiConfig {
     @Bean
@@ -15,6 +16,6 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("API Carrito - Golden Rose")
                         .version("1.0.0")
-                        .description("Endpoints para gestión de carritos de usuarios"));
+                        .description("Endpoints para gestion de carritos de usuarios"));
     }
 }

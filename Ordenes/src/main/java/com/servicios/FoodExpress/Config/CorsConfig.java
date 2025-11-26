@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
+/** Habilita CORS generico para el servicio de ordenes. */
 @Configuration
 public class CorsConfig {
     @Bean

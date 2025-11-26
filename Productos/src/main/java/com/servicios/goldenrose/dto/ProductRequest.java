@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/** Payload recibido al crear/actualizar un producto. */
 @Data
 public class ProductRequest {
     @NotBlank
