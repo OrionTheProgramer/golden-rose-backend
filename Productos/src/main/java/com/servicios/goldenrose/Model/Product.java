@@ -36,8 +36,21 @@ public class Product {
     /** Ej: Common, Rare, Epic, Legendary, Exclusive */
     private String rareza;
 
-    /** URL remota de imagen */
+    /** Icono/imagen de rareza (desde valorant-api). */
+    private String rarezaIconUrl;
+
+    /** URL remota de imagen (opcional) */
     private String imagenUrl;
+
+    /** Imagen almacenada directamente */
+    @Lob
+    @Column(name = "imagen_data")
+    private byte[] imagenData;
+
+    private String imagenContentType;
+
+    /** UUID opcional de referencia a skin/level en valorant-api. */
+    private String referenciaExterna;
 
     /** Stock disponible */
     private Integer stock;

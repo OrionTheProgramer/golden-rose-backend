@@ -18,6 +18,10 @@ public class ProductRequest {
     private BigDecimal precio;
     private String rareza;
     private String imagenUrl;
+    private String referenciaExterna;
     private Integer stock;
     private Boolean activo;
+    /** Imagen embebida en base64 (opcional). Si no se envía, se mantiene la existente. */
+    private String imagenBase64;
+    private String imagenContentType;
 }

@@ -4,12 +4,15 @@ import com.servicios.goldenrose.Model.Product;
 import com.servicios.goldenrose.Repository.ProductRepository;
 import com.servicios.goldenrose.dto.ProductRequest;
 import com.servicios.goldenrose.dto.ProductResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,12 +24,22 @@ import static org.mockito.Mockito.when;
 class ProductServiceTest {
 
     private ProductRepository repository;
+    private ValorantSkinClient valorantSkinClient;
     private ProductService service;
+    private AutoCloseable mocks;
 
     @BeforeEach
     void setup() {
+        mocks = MockitoAnnotations.openMocks(this);
         repository = mock(ProductRepository.class);
-        service = new ProductService(repository);
+        valorantSkinClient = mock(ValorantSkinClient.class);
+        when(valorantSkinClient.findSkin(any(), any())).thenReturn(Optional.empty());
+        service = new ProductService(repository, valorantSkinClient);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        mocks.close();
     }
 
     @Test
